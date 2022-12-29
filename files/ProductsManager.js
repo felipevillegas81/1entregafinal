@@ -2,34 +2,36 @@ import fs from 'fs'
 
 class ProductsManager {
     constructor() {
-        if (fs.existsSync('/Products.json')){
-            this.products = JSON.parse(fs.readFileSync('/Products.json', 'utf-8'))
+        if (fs.existsSync('./Products.json')){
+            this.products = JSON.parse(fs.readFileSync('./Products.json', 'utf-8'))
         } else {
             this.products = []
         }
     }
 
-async createProduct( { id, title, description, code, price, status, stock, thumbnails, category } ) {
-    const product = {
-        id,
-        title, 
-        description, 
-        code, 
-        price, 
-        status, 
-        stock, 
-        thumbnails, 
-        category
+    async createProduct({ id, title, description, code, price, status, stock, thumbnails, category }) {
+        const product = {
+            id,
+            title, 
+            description, 
+            code, 
+            price, 
+            status, 
+            stock, 
+            thumbnails, 
+            category
+        }
+
+        this.products.push(product)
+
+        await fs.promises.writeFile('./Products.json', JSON.stringify(this.products, null, '\t'))
+
+        console.log('Producto Creado')
+        return product
     }
 
-    this.products.push(product)
-
-    await fs.promises.writeFile('/Products.json', JSON.stringify(this.products, null, '\t'))
-
-    console.log('Producto Creado')
-}
-    async getProduct(){
-        return JSON.parse(await fs.promises.readFile('/Products.json'))
+    async getProduct() {
+        return JSON.parse(await fs.promises.readFile('./Products.json'))
     }
 }
 
@@ -45,7 +47,7 @@ productManager.createProduct({
         stock:50,
         thumbnails:"image",
         category:"Gafas"
-})
+}).then(data => console.log(data))
 
 productManager.getProduct()
     .then(data => console.log(data))
